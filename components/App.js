@@ -1,6 +1,7 @@
 import React from "react";
 import { Router, Route, Switch } from "react-router";
 import { createBrowserHistory } from "history";
+import styled from "styled-components";
 
 import CitationView from "./CitationView";
 import AddToReadingList from "./AddToReadingList";
@@ -18,12 +19,18 @@ const App = () => (
   </Router>
 );
 
+const ReadingGrid = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-gap: 2em;
+`;
+
 const Reading = () => {
   return (
-    <div>
+    <ReadingGrid>
       <ReadingView />
       <ReadingList />
-    </div>
+    </ReadingGrid>
   );
 };
 

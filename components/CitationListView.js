@@ -3,11 +3,59 @@ import { APISelected } from "../api/Selected.js";
 import { APICitation } from "../api/Citation.js";
 import { APIReadingList } from "../api/ReadingList.js";
 import { withTracker } from "meteor/react-meteor-data";
+import styled from "styled-components";
+import {
+  TokenText,
+  TokenTitle,
+  TokenButton,
+  TokenButtonHolder,
+  ColorHighlight,
+  ColorBorder
+} from "./tokens";
+
+const StyledTitle = styled.h1`
+  ${TokenTitle};
+  margin: 0;
+  padding: 0;
+  font-size: 1.25em;
+`;
+const StyledSubtitle = styled.h2`
+  ${TokenText};
+  margin: 1rem 0 2rem;
+  padding: 0;
+  text-transform: uppercase;
+`;
+const StyledCitationList = styled.ol`
+  margin: 0;
+  padding: 0;
+`;
+const StyledCitationListItem = styled.li`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+`;
+
+const StyledCitation = styled.div`
+  padding: 1em;
+  background: ${props => (props.active ? ColorHighlight : "transparent")};
+  border-top: 1px solid ${props => (props.active ? ColorBorder : "transparent")};
+  border-bottom: 1px solid
+    ${props => (props.active ? ColorBorder : "rgb(235, 235, 235)")};
+`;
+const StyledCitationTitle = styled.h3`
+  ${TokenTitle};
+  margin: 0 0 0.5em;
+`;
+const StyledCitationButton = styled.button`
+  ${TokenButton};
+`;
+const StyledCitationButtonHolder = styled.div`
+  ${TokenButtonHolder} grid-template-columns: 1fr 1fr 1fr;
+`;
 
 const Citation = ({ citation, open, add, highlight }) => {
   return (
-    <div
-      style={{ background: citation.active ? "yellow" : "transparent" }}
+    <StyledCitation
       ref={ref => {
         if (ref && citation.active)
           ref.scrollIntoViewIfNeeded({
@@ -16,18 +64,23 @@ const Citation = ({ citation, open, add, highlight }) => {
             inline: "nearest"
           });
       }}
+      active={citation.active}
     >
-      <h1>{citation.title}</h1>
+      <StyledCitationTitle>{citation.title}</StyledCitationTitle>
       <p>{citation.year}</p>
       <p>{citation.journal}</p>
       <p>{citation.authors.join(", ")}</p>
 
       {citation.preview ? <p>{citation.preview}</p> : null}
 
-      <button onClick={add}>Add to Reading List</button>
-      <button onClick={open}>Preview article</button>
-      <button onClick={highlight}>Highlight reference</button>
-    </div>
+      <StyledCitationButtonHolder>
+        <StyledCitationButton onClick={add}>Add to List</StyledCitationButton>
+        <StyledCitationButton onClick={open}>Preview</StyledCitationButton>
+        <StyledCitationButton onClick={highlight}>
+          Highlight
+        </StyledCitationButton>
+      </StyledCitationButtonHolder>
+    </StyledCitation>
   );
 };
 
@@ -41,22 +94,22 @@ const CitationView = ({
 
   return art ? (
     <div>
-      <h1>{art.title}</h1>
-      <p>Citations</p>
+      <StyledTitle>{art.title}</StyledTitle>
+      <StyledSubtitle>Citations</StyledSubtitle>
 
       {art.citations.length ? (
-        <ol>
+        <StyledCitationList>
           {art.citations.map((cit, ind) => (
-            <li key={ind}>
+            <StyledCitationListItem key={ind}>
               <Citation
                 citation={cit}
                 open={() => openArticle(cit)}
                 add={() => addToReadingList(cit)}
                 highlight={() => highlightMe(art, ind)}
               />
-            </li>
+            </StyledCitationListItem>
           ))}
-        </ol>
+        </StyledCitationList>
       ) : (
         <p>No citations found</p>
       )}

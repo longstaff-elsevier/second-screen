@@ -3,19 +3,51 @@ import { APISelected } from "../api/Selected.js";
 import { APIReadingList } from "../api/ReadingList.js";
 import { APICitation } from "../api/Citation.js";
 import { withTracker } from "meteor/react-meteor-data";
+import styled from "styled-components";
+import {
+  TokenText,
+  TokenTitle,
+  TokenButton,
+  TokenButtonHolder
+} from "./tokens";
+const StyledCitationButton = styled.button`
+  ${TokenButton};
+`;
+const StyledCloseButton = styled.button`
+  ${TokenButton};
+  margin-bottom: 2em;
+`;
+const StyledCitationButtonHolder = styled.div`
+  ${TokenButtonHolder} grid-template-columns: 1fr 1fr;
+`;
+const StyledTitle = styled.h1`
+  ${TokenTitle};
+  margin: 0;
+  padding: 0;
+  font-size: 1.25em;
+`;
+const StyledP = styled.p`
+  ${TokenText};
+  margin: 1rem 0 2rem;
+  padding: 0;
+`;
 
 const Citation = ({ citation, open, add }) => {
   return (
     <div>
-      <h1>{citation.title}</h1>
-      <p>{citation.year}</p>
-      <p>{citation.journal}</p>
-      <p>{citation.authors.join(", ")}</p>
+      <StyledTitle>{citation.title}</StyledTitle>
+      <StyledP>{citation.year}</StyledP>
+      <StyledP>{citation.journal}</StyledP>
+      <StyledP>{citation.authors.join(", ")}</StyledP>
 
-      <p>{citation.abstract}</p>
+      <StyledP>{citation.abstract}</StyledP>
 
-      <button onClick={add}>Add to Reading List</button>
-      <button onClick={open}>Open article</button>
+      <StyledCitationButtonHolder>
+        <StyledCitationButton onClick={add}>
+          Add to Reading List
+        </StyledCitationButton>
+        <StyledCitationButton onClick={open}>Open article</StyledCitationButton>
+      </StyledCitationButtonHolder>
     </div>
   );
 };
@@ -30,15 +62,14 @@ const CitationView = ({
 
   return art ? (
     <div>
-      <a
-        href="#"
+      <StyledCloseButton
         onClick={ev => {
           ev.preventDefault();
           clearCitation();
         }}
       >
         Close
-      </a>
+      </StyledCloseButton>
       <Citation
         citation={art}
         open={() => openArticle(art)}

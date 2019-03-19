@@ -2,19 +2,55 @@ import React from "react";
 import { APISelected } from "../api/Selected.js";
 import { APICitation } from "../api/Citation.js";
 import { withTracker } from "meteor/react-meteor-data";
+import styled from "styled-components";
+import {
+  TokenText,
+  TokenTitle,
+  TokenButton,
+  TokenButtonHolder,
+  ColorBorder,
+  ColorHighlight,
+  ColorActive
+} from "./tokens";
+
+const StyledTitle = styled.h1`
+  ${TokenTitle};
+  margin: 0;
+  padding: 0;
+  font-size: 2em;
+`;
+const StyledMeta = styled.p`
+  ${TokenTitle};
+  font-size: 1.1em;
+  line-height: 1.25;
+`;
+const StyledAbstract = styled.p`
+  ${TokenText};
+  font-size: 1.1em;
+  line-height: 1.25;
+`;
+const StyledText = styled.p`
+  ${TokenText};
+  font-size: 1em;
+  line-height: 1.25;
+`;
+const StyledCitationLink = styled.a`
+  color: ${props => (props.selected ? ColorActive : ColorBorder)};
+  background: ${props => (props.active ? ColorHighlight : "transparent")};
+`;
 
 const parseText = (text, citations, openCitation, highlight) => {
   const split = text.split(/\{\{|\}\}/);
 
   return (
-    <div>
+    <StyledText>
       {split.map((txt, ind, cit) => {
         if (ind % 2 === 0) {
           return <span>{txt}</span>;
         } else {
           const cit = Math.floor(ind / 2);
           return (
-            <a
+            <StyledCitationLink
               href="#"
               onClick={ev => {
                 ev.preventDefault();
@@ -22,11 +58,8 @@ const parseText = (text, citations, openCitation, highlight) => {
               }}
               onMouseEnter={() => highlight(cit)}
               onMouseLeave={() => highlight(-1)}
-              style={{
-                background: citations[cit].selected
-                  ? "red"
-                  : citations[cit].active ? "yellow" : "transparent"
-              }}
+              selected={citations[cit].selected}
+              active={citations[cit].active}
               ref={ref => {
                 if (ref && (citations[cit].selected || citations[cit].active))
                   ref.scrollIntoViewIfNeeded({
@@ -37,11 +70,11 @@ const parseText = (text, citations, openCitation, highlight) => {
               }}
             >
               {txt}
-            </a>
+            </StyledCitationLink>
           );
         }
       })}
-    </div>
+    </StyledText>
   );
 };
 
@@ -50,8 +83,10 @@ const ReadingView = ({ article, openCitation, highlightCitation }) => {
 
   return art ? (
     <div>
-      <h1>{art.title}</h1>
-      <p>{art.abstract}</p>
+      <StyledTitle>{art.title}</StyledTitle>
+      <StyledMeta>{art.authors.join(", ")}</StyledMeta>
+      <StyledMeta>{art.ref}</StyledMeta>
+      <StyledAbstract>{art.abstract}</StyledAbstract>
       {parseText(
         art.text ? art.text : art.abstract,
         art.citations,
