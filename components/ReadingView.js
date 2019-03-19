@@ -27,6 +27,14 @@ const parseText = (text, citations, openCitation, highlight) => {
                   ? "red"
                   : citations[cit].active ? "yellow" : "transparent"
               }}
+              ref={ref => {
+                if (ref && (citations[cit].selected || citations[cit].active))
+                  ref.scrollIntoViewIfNeeded({
+                    behavior: "smooth",
+                    block: "end",
+                    inline: "nearest"
+                  });
+              }}
             >
               {txt}
             </a>
@@ -44,7 +52,12 @@ const ReadingView = ({ article, openCitation, highlightCitation }) => {
     <div>
       <h1>{art.title}</h1>
       <p>{art.abstract}</p>
-      {parseText(art.text, art.citations, openCitation, highlightCitation)}
+      {parseText(
+        art.text ? art.text : art.abstract,
+        art.citations,
+        openCitation,
+        highlightCitation
+      )}
     </div>
   ) : (
     <div>No article selected</div>
