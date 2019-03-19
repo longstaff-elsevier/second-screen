@@ -4,5 +4,8 @@ import { Meteor } from "meteor/meteor";
 import "../api/ReadingList.js";
 import "../api/Selected.js";
 import "../api/Citation.js";
+import { APIMount, insertIfNeeded } from "../api/Mount.js";
 
-Meteor.startup(() => {});
+Meteor.startup(() => {
+  insertIfNeeded();
+});
